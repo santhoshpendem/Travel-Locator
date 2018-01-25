@@ -1,4 +1,4 @@
-package com.example.santhosh.ubercaranimation;
+package com.example.santhosh.travellocator;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

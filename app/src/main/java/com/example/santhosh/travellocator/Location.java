@@ -1,9 +1,6 @@
-package com.example.santhosh.ubercaranimation;
+package com.example.santhosh.travellocator;
 
 import com.google.android.gms.maps.GoogleMap;
-
-import android.location.LocationListener;
-import android.os.Bundle;
 
 /**
  * Created by Santhosh Pendem on 1/24/2018.

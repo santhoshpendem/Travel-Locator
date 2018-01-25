@@ -1,4 +1,4 @@
-package com.example.santhosh.ubercaranimation;
+package com.example.santhosh.travellocator;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -11,7 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
-import com.example.santhosh.ubercaranimation.utils.Permissions;
+import com.example.santhosh.travellocator.utils.Permissions;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

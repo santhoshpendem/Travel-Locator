@@ -1,6 +1,4 @@
-package com.example.santhosh.ubercaranimation.utils;
-
-import com.example.santhosh.ubercaranimation.MapsActivity;
+package com.example.santhosh.travellocator.utils;
 
 import android.Manifest;
 import android.app.Activity;

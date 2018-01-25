@@ -1,4 +1,4 @@
-package com.example.santhosh.ubercaranimation;
+package com.example.santhosh.travellocator;
 
 import com.google.android.gms.maps.model.LatLng;
 

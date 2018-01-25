@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.example.santhosh.ubercaranimation"
+<manifest package="com.example.santhosh.travellocator"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <permission      android:name="com.example.santhosh.ubercaranimation.permission.C2D_MESSAGE"
+    <permission      android:name="com.example.santhosh.travellocator.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
     <uses-permission android:name="com.example.santhosh.ubercaranimation.permission.C2D_MESSAGE"/>
 
@@ -36,7 +36,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name="com.example.santhosh.travellocator.MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

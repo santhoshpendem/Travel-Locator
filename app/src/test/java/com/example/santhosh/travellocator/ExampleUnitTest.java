@@ -1,4 +1,4 @@
-package com.example.santhosh.ubercaranimation;
+package com.example.santhosh.travellocator;
 
 import org.junit.Test;
 
