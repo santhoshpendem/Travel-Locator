@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.example.santhosh.travellocator"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -36,13 +37,24 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.santhosh.travellocator.MapsActivity"
+            android:name="com.example.santhosh.travellocator.views.MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.noknok.android.client.asm.authui.fps.FpActivity"
+            android:screenOrientation = "portrait"
+            tools:replace = "android:screenOrientation"
+            android:windowSoftInputMode = "stateHidden|adjustPan"
+            android:noHistory = "true"
+            android:excludeFromRecents = "true"
+            android:configChanges = "orientation|screenSize">
+        </activity>
+
     </application>
 
 </manifest>

@@ -1,8 +1,9 @@
-package com.example.santhosh.travellocator;
+package com.example.santhosh.travellocator.views;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -10,7 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.example.santhosh.travellocator.AddressLocator;
+import com.example.santhosh.travellocator.R;
+import com.example.santhosh.travellocator.utils.ExactAddress;
 import com.example.santhosh.travellocator.utils.Permissions;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,9 +25,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.tmobile.tmoid.sdk.Agent;
+import com.tmobile.tmoid.sdk.AgentService;
+import com.tmobile.tmoid.sdk.PushType;
+import com.tmobile.tmoid.sdk.impl.util.Prefs;
+import com.tmobile.tmoid.sdk.AccessToken;
+import com.tmobile.tmoid.sdk.AsyncCall;
+import com.tmobile.tmoid.sdk.impl.configuration.ConfiguratorActivity;
+import com.tmobile.tmoid.sdk.impl.util.Prefs;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 	
@@ -34,15 +53,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
 	public static final int LOCATION_UPDATE_MIN_TIME = 5000;
 	
+	Bundle bundle = new Bundle();
+	
+	/*//TODO Remove this later
+	private AgentService agentService;
+	private Agent agent;
+	private AccessToken accessToken;
+	
+	private String myClientId = "";
+	private String myTransId = LaunchUUID.getHexUUID();
+	public static final String EMPTY_STRING = "";
+	private static final int CONFIG_ACT = 1000;
+	*/
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_maps);
+		
+		/*Prefs prefs = new Prefs(this);
+		myClientId = prefs.fetch("client.id", "TMOAppNative");
+		myTransId = prefs.fetch("transaction.id", UUID.randomUUID().toString());
+		agentService = AgentService.getInstance(this,myClientId, myTransId, PushType.PushNone);
+		initialize();*/
+		
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mapFragment.getMapAsync(this);
 		
 	}
+	
 	
 	@Override
 	protected void onResume() {
@@ -116,7 +157,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 			mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+			mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+				@Override
+				public boolean onMarkerClick(Marker marker) {
+					onMarkerClickListener();
+					return false;
+				}
+			});
 		}
+	}
+	
+	private void onMarkerClickListener(){
+	AddLocationFragment addLocationFragment = new AddLocationFragment();
+	bundle
+	addLocationFragment.show(getFragmentManager(),"Location");
 	}
 	
 	@Override
@@ -126,10 +180,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	
 	@Override
 	public void onMapLongClick(LatLng latLng) {
-		AddressLocator addressLocator = new AddressLocator();
+		ExactAddress exactAddress = new ExactAddress();
 		try {
-			mMap.addMarker(new MarkerOptions().position(latLng).title(addressLocator.getExactAddress(this,latLng))
-					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+			mMap.addMarker(new MarkerOptions().position(latLng).title(exactAddress.getExactAddress(this, latLng)).icon(BitmapDescriptorFactory.defaultMarker
+					(BitmapDescriptorFactory.HUE_GREEN)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -150,4 +204,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			finish();
 		}
 	}
+	
+	/*protected void initialize() {
+		startActivityForResult(new Intent(this, ConfiguratorActivity.class), CONFIG_ACT);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == 1000) {
+			agentService = AgentService.getInstance(this, myClientId, myTransId, PushType.PushNone);
+			agentService.connectAgent(agent -> {
+				MapsActivity.this.agent = agent;
+				useSDK();
+				
+			}, ex -> {
+				Log.e("MapsActivity", "", ex);
+			});
+			
+		}
+		
+	}
+	
+	private void useSDK() {
+		String userId = "";
+		Map<String, String> oauthParameters = new HashMap<>();
+		oauthParameters.put("scope", "TMO_ID_profile associated_lines openid extended_lines");
+		oauthParameters.put("access_type", "online");
+		oauthParameters.put("approval_prompt", "auto");
+		oauthParameters.put("response_selection", "id_token.basic");
+		agent.setBioEnabled(false, null);
+		
+		AsyncCall call = agent.requestAccessToken(MapsActivity.this, userId, oauthParameters, token -> {
+			MapsActivity.this.accessToken = token;
+			System.out.println("AccessToken " + accessToken.toJsonString());
+		}, ex -> {
+			Log.e("Playground", "Got error:" + ex.toMsg());
+		}, json -> {
+			Log.d("Playground", json);
+		});
+		
+	}
+	
+	public static final class LaunchUUID {
+		private static AtomicReference<String> hexValue = new AtomicReference<>(EMPTY_STRING);
+		
+		public static String getHexUUID() {
+			return hexValue.get();
+		}
+	}
+	*/
 }

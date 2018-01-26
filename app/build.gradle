@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.santhosh.ubercaranimation"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         multiDexEnabled true
         versionCode 1
@@ -12,12 +12,23 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+    defaultConfig {
+        multiDexEnabled true
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
         }
+        debug {
+            testCoverageEnabled true
+        }
+
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 }
 
@@ -35,6 +46,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    releaseImplementation "com.tmobile.asdk:asdk-slave:7.10.0"
+    debugImplementation "com.tmobile.asdk:asdk-slave-debug:7.10.0"
+    annotationProcessor 'org.immutables:value:2.3.7'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.7"
+
 
 }
 
