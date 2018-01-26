@@ -55,28 +55,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	
 	Bundle bundle = new Bundle();
 	
-	/*//TODO Remove this later
-	private AgentService agentService;
-	private Agent agent;
-	private AccessToken accessToken;
-	
-	private String myClientId = "";
-	private String myTransId = LaunchUUID.getHexUUID();
-	public static final String EMPTY_STRING = "";
-	private static final int CONFIG_ACT = 1000;
-	*/
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_maps);
-		
-		/*Prefs prefs = new Prefs(this);
-		myClientId = prefs.fetch("client.id", "TMOAppNative");
-		myTransId = prefs.fetch("transaction.id", UUID.randomUUID().toString());
-		agentService = AgentService.getInstance(this,myClientId, myTransId, PushType.PushNone);
-		initialize();*/
 		
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -169,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	
 	private void onMarkerClickListener(){
 	AddLocationFragment addLocationFragment = new AddLocationFragment();
-	bundle
+	addLocationFragment.setArguments(bundle);
 	addLocationFragment.show(getFragmentManager(),"Location");
 	}
 	
@@ -182,6 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	public void onMapLongClick(LatLng latLng) {
 		ExactAddress exactAddress = new ExactAddress();
 		try {
+			bundle.putString("exactAddress",exactAddress.getExactAddress(this, latLng));
 			mMap.addMarker(new MarkerOptions().position(latLng).title(exactAddress.getExactAddress(this, latLng)).icon(BitmapDescriptorFactory.defaultMarker
 					(BitmapDescriptorFactory.HUE_GREEN)));
 		} catch (IOException e) {
@@ -205,53 +188,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	}
 	
-	/*protected void initialize() {
-		startActivityForResult(new Intent(this, ConfiguratorActivity.class), CONFIG_ACT);
-	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == 1000) {
-			agentService = AgentService.getInstance(this, myClientId, myTransId, PushType.PushNone);
-			agentService.connectAgent(agent -> {
-				MapsActivity.this.agent = agent;
-				useSDK();
-				
-			}, ex -> {
-				Log.e("MapsActivity", "", ex);
-			});
-			
-		}
-		
-	}
-	
-	private void useSDK() {
-		String userId = "";
-		Map<String, String> oauthParameters = new HashMap<>();
-		oauthParameters.put("scope", "TMO_ID_profile associated_lines openid extended_lines");
-		oauthParameters.put("access_type", "online");
-		oauthParameters.put("approval_prompt", "auto");
-		oauthParameters.put("response_selection", "id_token.basic");
-		agent.setBioEnabled(false, null);
-		
-		AsyncCall call = agent.requestAccessToken(MapsActivity.this, userId, oauthParameters, token -> {
-			MapsActivity.this.accessToken = token;
-			System.out.println("AccessToken " + accessToken.toJsonString());
-		}, ex -> {
-			Log.e("Playground", "Got error:" + ex.toMsg());
-		}, json -> {
-			Log.d("Playground", json);
-		});
-		
-	}
-	
-	public static final class LaunchUUID {
-		private static AtomicReference<String> hexValue = new AtomicReference<>(EMPTY_STRING);
-		
-		public static String getHexUUID() {
-			return hexValue.get();
-		}
-	}
-	*/
 }

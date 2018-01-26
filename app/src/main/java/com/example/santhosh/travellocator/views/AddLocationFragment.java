@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * Created by Santhosh Pendem on 1/25/2018.
  */
@@ -47,8 +50,13 @@ public class AddLocationFragment extends DialogFragment implements View.OnClickL
 		cancel = view.findViewById(R.id.cancel);
 		cancel.setOnClickListener(v -> dialog.dismiss());
 		
-		ExactAddress exactAddress = new ExactAddress();
-		address.setText(exactAddress.getExactAddress(getContext(),));
+		String exactAddress = getArguments().getString("exactAddress");
+		deDup(exactAddress);
+		address.setText(exactAddress);
+	}
+	
+	public String deDup(String s) {
+		return Arrays.stream(s.split(",")).distinct().collect(Collectors.joining(",\n"));
 	}
 	
 	@Override
