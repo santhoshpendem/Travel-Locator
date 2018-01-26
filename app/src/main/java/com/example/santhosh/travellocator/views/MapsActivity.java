@@ -63,7 +63,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		mapFragment.getMapAsync(this);
-		
 	}
 	
 	
@@ -133,10 +132,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	};
 	
 	
+	@SuppressLint("MissingPermission")
 	private void addMarker(Location location) {
 		if (mMap != null) {
 			mMap.clear();
-			LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+			location = mLocationManager.getLastKnownLocation(mLocationManager.getProviders(true).get(0));
+			double latitude = 0, longitude = 0;
+			if(location!= null){
+				 latitude = location.getLatitude();
+				 longitude = location.getLongitude();
+			}
+			LatLng latLng = new LatLng(latitude, longitude);
 			mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
 			mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -162,10 +168,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	
 	@Override
 	public void onMapLongClick(LatLng latLng) {
-		ExactAddress exactAddress = new ExactAddress();
+		AddressLocator addressLocator = new AddressLocator();
 		try {
-			bundle.putString("exactAddress",exactAddress.getExactAddress(this, latLng));
-			mMap.addMarker(new MarkerOptions().position(latLng).title(exactAddress.getExactAddress(this, latLng)).icon(BitmapDescriptorFactory.defaultMarker
+			bundle.putString("exactAddress",addressLocator.getExactAddress(this, latLng));
+			mMap.addMarker(new MarkerOptions().position(latLng).title(addressLocator.getExactAddress(this, latLng)).icon(BitmapDescriptorFactory.defaultMarker
 					(BitmapDescriptorFactory.HUE_GREEN)));
 		} catch (IOException e) {
 			e.printStackTrace();

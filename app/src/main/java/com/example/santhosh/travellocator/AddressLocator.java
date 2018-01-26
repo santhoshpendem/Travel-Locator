@@ -24,13 +24,8 @@ public class AddressLocator {
 		addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
 		
 		String street = addresses.get(0).getAddressLine(0);
-		String city = addresses.get(0).getLocality();
-		String state = addresses.get(0).getAdminArea();
-		String country = addresses.get(0).getCountryName();
-		String postalCode = addresses.get(0).getPostalCode();
-
-		StringBuilder address = new StringBuilder();
-		return address.append(street + ",\n").append(city + ",\n").append(state + ",\n").append(country + ",\n").append(postalCode + ",\n").toString();
 		
+		StringBuilder add = new StringBuilder();
+		return add.append(street).append(",\n").toString();
 	}
 }
