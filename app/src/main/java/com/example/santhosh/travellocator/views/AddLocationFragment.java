@@ -31,6 +31,13 @@ public class AddLocationFragment extends DialogFragment implements View.OnClickL
 		return super.onCreateDialog(savedInstanceState);
 	}
 	
+	/**
+	 * This method is used to inflate the view with layout.
+	 * @param inflater
+	 * @param container
+	 * @param savedInstanceState
+	 * @return
+	 */
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +45,11 @@ public class AddLocationFragment extends DialogFragment implements View.OnClickL
 		return view;
 	}
 	
+	/**
+	 * This method Creates the view and initializes all the widgets. Here we are also setting the address to the edittext
+	 * @param view
+	 * @param savedInstanceState
+	 */
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -51,7 +63,9 @@ public class AddLocationFragment extends DialogFragment implements View.OnClickL
 		address.setText(exactAddress.substring(0,exactAddress.trim().length()-1));
 	}
 	
-	
+	/**
+	 * In this method we are trying to make the Dialog fragment to occupy the whole screen.
+	 */
 	@Override
 	public void onStart() {
 		super.onStart();

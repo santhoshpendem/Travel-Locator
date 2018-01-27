@@ -89,6 +89,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	}
 	
+	/**
+	 * This initialization allows us to detect the change in the location
+	 */
 	private android.location.LocationListener mLocationListener = new android.location.LocationListener() {
 		@Override
 		public void onLocationChanged(android.location.Location location) {
@@ -113,7 +116,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	};
 	
-	
+	/**
+	 * THis method is used to add the marker on the map and animate the screen when we launch the app(like the zoom in effect)
+	 * @param location
+	 */
 	@SuppressLint("MissingPermission")
 	private void addMarker(Location location) {
 		if (mMap != null) {
@@ -137,6 +143,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	}
 	
+	/**
+	 * THis method listens for the clicks on the markers. Here we are opening the dialog fragment.
+	 */
 	private void onMarkerClickListener() {
 		AddLocationFragment addLocationFragment = new AddLocationFragment();
 		addLocationFragment.setArguments(bundle);
