@@ -1,12 +1,9 @@
 package com.example.santhosh.travellocator.views;
 
 import com.example.santhosh.travellocator.R;
-import com.example.santhosh.travellocator.utils.ExactAddress;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -51,13 +48,9 @@ public class AddLocationFragment extends DialogFragment implements View.OnClickL
 		cancel.setOnClickListener(v -> dialog.dismiss());
 		
 		String exactAddress = getArguments().getString("exactAddress");
-		deDup(exactAddress);
-		address.setText(exactAddress);
+		address.setText(exactAddress.substring(0,exactAddress.trim().length()-1));
 	}
 	
-	public String deDup(String s) {
-		return Arrays.stream(s.split(",")).distinct().collect(Collectors.joining(",\n"));
-	}
 	
 	@Override
 	public void onStart() {

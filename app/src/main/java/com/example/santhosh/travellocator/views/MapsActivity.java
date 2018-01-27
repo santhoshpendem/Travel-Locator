@@ -3,7 +3,6 @@ package com.example.santhosh.travellocator.views;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -11,11 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.santhosh.travellocator.AddressLocator;
 import com.example.santhosh.travellocator.R;
-import com.example.santhosh.travellocator.utils.ExactAddress;
 import com.example.santhosh.travellocator.utils.Permissions;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,20 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import com.tmobile.tmoid.sdk.Agent;
-import com.tmobile.tmoid.sdk.AgentService;
-import com.tmobile.tmoid.sdk.PushType;
-import com.tmobile.tmoid.sdk.impl.util.Prefs;
-import com.tmobile.tmoid.sdk.AccessToken;
-import com.tmobile.tmoid.sdk.AsyncCall;
-import com.tmobile.tmoid.sdk.impl.configuration.ConfiguratorActivity;
-import com.tmobile.tmoid.sdk.impl.util.Prefs;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 	
@@ -85,7 +69,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		mMap = googleMap;
 		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat
 				.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && hasGrantedPermissions) {
-			
 			Permissions.requestPermissions(MapsActivity.this);
 			return;
 		}
@@ -98,7 +81,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	@SuppressLint("MissingPermission")
 	private void getCurrentLocation() {
 		boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		
 		Location location = null;
 		if (isGPSEnabled) {
 			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_UPDATE_MIN_TIME, LOCATION_UPDATE_MIN_DISTANCE, mLocationListener);
@@ -138,9 +120,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			mMap.clear();
 			location = mLocationManager.getLastKnownLocation(mLocationManager.getProviders(true).get(0));
 			double latitude = 0, longitude = 0;
-			if(location!= null){
-				 latitude = location.getLatitude();
-				 longitude = location.getLongitude();
+			if (location != null) {
+				latitude = location.getLatitude();
+				longitude = location.getLongitude();
 			}
 			LatLng latLng = new LatLng(latitude, longitude);
 			mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
@@ -155,10 +137,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	}
 	
-	private void onMarkerClickListener(){
-	AddLocationFragment addLocationFragment = new AddLocationFragment();
-	addLocationFragment.setArguments(bundle);
-	addLocationFragment.show(getFragmentManager(),"Location");
+	private void onMarkerClickListener() {
+		AddLocationFragment addLocationFragment = new AddLocationFragment();
+		addLocationFragment.setArguments(bundle);
+		addLocationFragment.show(getFragmentManager(), "Location");
 	}
 	
 	@Override
@@ -170,9 +152,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	public void onMapLongClick(LatLng latLng) {
 		AddressLocator addressLocator = new AddressLocator();
 		try {
-			bundle.putString("exactAddress",addressLocator.getExactAddress(this, latLng));
-			mMap.addMarker(new MarkerOptions().position(latLng).title(addressLocator.getExactAddress(this, latLng)).icon(BitmapDescriptorFactory.defaultMarker
-					(BitmapDescriptorFactory.HUE_GREEN)));
+			bundle.putString("exactAddress", addressLocator.getExactAddress(this, latLng));
+			mMap.addMarker(new MarkerOptions().position(latLng).title(addressLocator.getExactAddress(this, latLng).replace(",", ",\n")).icon
+					(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
