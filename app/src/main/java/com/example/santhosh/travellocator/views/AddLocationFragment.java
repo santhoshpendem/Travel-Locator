@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Created by Santhosh Pendem on 1/25/2018.
@@ -22,8 +20,7 @@ import java.util.stream.Collectors;
 
 public class AddLocationFragment extends DialogFragment implements View.OnClickListener{
 	
-	private EditText address,description;
-	private Button saveButton;
+	private EditText address;
 	private ImageView cancel;
 	private Dialog dialog ;
 	@Override
@@ -41,8 +38,7 @@ public class AddLocationFragment extends DialogFragment implements View.OnClickL
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.add_location,container,true);
-		return view;
+		return inflater.inflate(R.layout.add_location,container,true);
 	}
 	
 	/**
@@ -54,8 +50,8 @@ public class AddLocationFragment extends DialogFragment implements View.OnClickL
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		address = view.findViewById(R.id.address);
-		description = view.findViewById(R.id.description);
-		saveButton = view.findViewById(R.id.saveLocation);
+		EditText description = view.findViewById(R.id.description);
+		Button saveButton = view.findViewById(R.id.saveLocation);
 		cancel = view.findViewById(R.id.cancel);
 		cancel.setOnClickListener(v -> dialog.dismiss());
 		

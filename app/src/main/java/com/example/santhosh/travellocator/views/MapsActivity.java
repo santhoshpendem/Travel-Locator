@@ -4,14 +4,25 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.example.santhosh.travellocator.AddressAutoCompleteAdapter;
 import com.example.santhosh.travellocator.AddressLocator;
+import com.example.santhosh.travellocator.AddressSearchResult;
+import com.example.santhosh.travellocator.DelayAutoCompleteAddress;
 import com.example.santhosh.travellocator.R;
 import com.example.santhosh.travellocator.utils.Permissions;
 
@@ -22,20 +33,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener, View.OnClickListener {
 	
 	
 	private GoogleMap mMap;
 	private boolean hasGrantedPermissions = true;
 	private LocationManager mLocationManager;
 	
+	
 	public static final int LOCATION_UPDATE_MIN_DISTANCE = 10;
 	public static final int LOCATION_UPDATE_MIN_TIME = 5000;
+	
+	private Integer THRESHOLD = 2;
+	//private DelayAutoCompleteAddress geo_autocomplete;
+	//private ImageView geo_autocomplete_clear;
 	
 	Bundle bundle = new Bundle();
 	
@@ -43,6 +59,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_maps);
+		
+		
+		/*geo_autocomplete_clear = (ImageView) findViewById(R.id.geo_autocomplete_clear);
+		geo_autocomplete = (DelayAutoCompleteAddress) findViewById(R.id.geo_autocomplete);
+		geo_autocomplete.setThreshold(THRESHOLD);
+		geo_autocomplete.setAdapter(new AddressAutoCompleteAdapter(this));
+		
+		geo_autocomplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				AddressSearchResult result = (AddressSearchResult) parent.getItemAtPosition(position);
+				geo_autocomplete.setText(result.getAddress());
+			}
+		});
+		geo_autocomplete.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				if(s.length()>0){
+					geo_autocomplete_clear.setVisibility(View.VISIBLE);
+				}else{
+					geo_autocomplete_clear.setVisibility(View.GONE);
+				}
+			}
+		});
+		
+		geo_autocomplete_clear.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				geo_autocomplete.setText("");
+			}
+		});*/
 		
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -133,12 +190,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			LatLng latLng = new LatLng(latitude, longitude);
 			mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
-			mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-				@Override
-				public boolean onMarkerClick(Marker marker) {
-					onMarkerClickListener();
-					return false;
-				}
+			mMap.setOnMarkerClickListener(marker -> {
+				onMarkerClickListener();
+				return false;
 			});
 		}
 	}
@@ -185,4 +239,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	}
 	
+	@SuppressLint("MissingPermission")
+	@Override
+	public void onClick(View v) {
+		
+		switch(v.getId()) {
+			case R.id.search:
+				EditText address_search = findViewById(R.id.address_search);
+				String addressEntered = address_search.getText().toString().trim();
+				List<Address> addresses = null;
+				if (addressEntered != null || addressEntered.equals("")) {
+					Geocoder geocoder = new Geocoder(this);
+					try {
+						addresses = geocoder.getFromLocationName(addressEntered, 1);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					Address address = addresses.get(0);
+					LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+					mMap.addMarker(new MarkerOptions().position(latLng));
+					mMap.setMyLocationEnabled(true);
+					mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+				}
+				break;
+			case R.id.fab:
+				if (mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) {
+					mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+				} else {
+					mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+				}
+		}
+		
+	}
 }

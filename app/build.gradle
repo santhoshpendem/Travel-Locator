@@ -52,6 +52,11 @@ dependencies {
     annotationProcessor 'org.immutables:value:2.3.7'
     annotationProcessor "com.google.dagger:dagger-compiler:2.7"
 
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+
 
 }
 
